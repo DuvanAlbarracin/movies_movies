@@ -36,3 +36,12 @@ func SetProtoMovie(movie models.Movie) *proto.Movie {
 
 	return &mp
 }
+
+func SetProtoGenre(genre models.Genre) *proto.Genre {
+	mp := proto.Genre{
+		Id:   genre.Id,
+		Name: genre.Name,
+	}
+
+	return &mp
+}
