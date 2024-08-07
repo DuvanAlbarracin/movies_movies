@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/DuvanAlbarracin/movies_movies/pkg/db"
 	"github.com/DuvanAlbarracin/movies_movies/pkg/proto"
@@ -54,5 +55,41 @@ func (s *Server) GetAllGenres(ctx context.Context, req *proto.GetAllGenresReques
 
 	return &proto.GetAllGenresResponse{
 		Genres: protoGenres,
+	}, nil
+}
+
+func (s *Server) AddGenderToMovie(ctx context.Context, req *proto.AddGenderToMovieRequest) (*proto.AddGenderToMovieResponse, error) {
+	if _, err := db.FindMovieById(s.H.Conn, req.MovieId); err != nil {
+		return nil, status.New(codes.NotFound, "There is no movie with that id").Err()
+	}
+
+	if _, err := db.FindGenreById(s.H.Conn, req.GenreId); err != nil {
+		return nil, status.New(codes.NotFound, "There is no genre with that id").Err()
+	}
+
+	if err := db.AddGenderToMovie(s.H.Conn, req.GenreId, req.MovieId); err != nil {
+		return nil, status.New(codes.Internal, "There was an error creating the join record").Err()
+	}
+
+	return &proto.AddGenderToMovieResponse{
+		Status: http.StatusOK,
+	}, nil
+}
+
+func (s *Server) RemoveGenderFromMovie(ctx context.Context, req *proto.RemoveGenderFromMovieRequest) (*proto.RemoveGenderFromMovieResponse, error) {
+	if _, err := db.FindMovieById(s.H.Conn, req.MovieId); err != nil {
+		return nil, status.New(codes.NotFound, "There is no movie with that id").Err()
+	}
+
+	if _, err := db.FindGenreById(s.H.Conn, req.GenreId); err != nil {
+		return nil, status.New(codes.NotFound, "There is no genre with that id").Err()
+	}
+
+	if err := db.RemoveGenderFromMovie(s.H.Conn, req.GenreId, req.MovieId); err != nil {
+		return nil, status.New(codes.Internal, "There was an error deleting from join record").Err()
+	}
+
+	return &proto.RemoveGenderFromMovieResponse{
+		Status: http.StatusOK,
 	}, nil
 }

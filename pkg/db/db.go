@@ -2,7 +2,10 @@ package db
 
 import (
 	"context"
+	"encoding/csv"
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/DuvanAlbarracin/movies_movies/pkg/models"
 	"github.com/DuvanAlbarracin/movies_movies/pkg/utils"
@@ -35,6 +38,7 @@ func Init(url string) Handler {
 	createMoviesTable(pool)
 	createGenrerTable(pool)
 	createGenrerMovieTable(pool)
+	populateGenreTable()
 
 	return Handler{Conn: pool}
 }
@@ -60,6 +64,25 @@ func createGenrerTable(pool *pgxpool.Pool) (err error) {
 	}
 
 	log.Println("Genres table created succesfully!")
+	return nil
+}
+
+func populateGenreTable() (err error) {
+	file, err := os.Open("../../genres.csv")
+	if err != nil {
+		log.Fatalln("Error opening the Genres csv seed")
+		return
+	}
+	defer file.Close()
+
+	r := csv.NewReader(file)
+	genres, err := r.ReadAll()
+	if err != nil {
+		log.Fatalln("Error reading the Genres csv seed")
+		return
+	}
+
+	fmt.Println("Readed from csv: ", genres)
 	return nil
 }
 
