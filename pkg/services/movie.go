@@ -6,7 +6,7 @@ import (
 
 	"github.com/DuvanAlbarracin/movies_movies/pkg/db"
 	"github.com/DuvanAlbarracin/movies_movies/pkg/models"
-	"github.com/DuvanAlbarracin/movies_movies/pkg/proto"
+	proto "github.com/DuvanAlbarracin/movies_movies/pkg/proto/movie"
 	"github.com/DuvanAlbarracin/movies_movies/pkg/utils"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

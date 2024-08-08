@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/DuvanAlbarracin/movies_movies/pkg/db"
-	"github.com/DuvanAlbarracin/movies_movies/pkg/proto"
+	proto "github.com/DuvanAlbarracin/movies_movies/pkg/proto/genre"
 	"github.com/DuvanAlbarracin/movies_movies/pkg/utils"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package genre;
 
-option go_package = "./pkg/proto";
+option go_package = "./pkg/proto/genre";
 
 service GenreService {
     rpc GetGenreById(GetGenreByIdRequest) returns (GetGenreByIdResponse) {}

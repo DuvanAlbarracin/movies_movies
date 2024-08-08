@@ -4,7 +4,7 @@
 // - protoc             v3.15.8
 // source: pkg/proto/movie.proto
 
-package proto
+package movie
 
 import (
 	context "context"

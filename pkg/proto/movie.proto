@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package movie;
 
-option go_package = "./pkg/proto";
+option go_package = "./pkg/proto/movie";
 
 service MoviesService {
   rpc Create(CreateRequest) returns (CreateResponse) {}

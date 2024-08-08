@@ -4,7 +4,7 @@
 // - protoc             v3.15.8
 // source: pkg/proto/genre.proto
 
-package proto
+package genre
 
 import (
 	context "context"
