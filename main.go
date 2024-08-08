@@ -6,7 +6,8 @@ import (
 
 	"github.com/DuvanAlbarracin/movies_movies/pkg/config"
 	"github.com/DuvanAlbarracin/movies_movies/pkg/db"
-	"github.com/DuvanAlbarracin/movies_movies/pkg/proto"
+	"github.com/DuvanAlbarracin/movies_movies/pkg/proto/genre"
+	"github.com/DuvanAlbarracin/movies_movies/pkg/proto/movie"
 	"github.com/DuvanAlbarracin/movies_movies/pkg/services"
 	"google.golang.org/grpc"
 )
@@ -24,13 +25,19 @@ func main() {
 	}
 	log.Println("Auth service on:", config.Port)
 
-	server := services.Server{
+	movieServer := services.MovieServer{
 		H: h,
 	}
-	defer server.H.Conn.Close()
+	defer movieServer.H.Conn.Close()
+
+	genreServer := services.GenreServer{
+		H: h,
+	}
+	defer genreServer.H.Conn.Close()
 
 	grpcServer := grpc.NewServer()
-	proto.RegisterMoviesServiceServer(grpcServer, &server)
+	movie.RegisterMoviesServiceServer(grpcServer, &movieServer)
+	genre.RegisterGenreServiceServer(grpcServer, &genreServer)
 
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalln("Failed to serve:", err)

@@ -22,10 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type GenreServiceClient interface {
-	GetGenreById(ctx context.Context, in *GetGenreByIdRequest, opts ...grpc.CallOption) (*GetGenreByIdResponse, error)
-	GetAllGenres(ctx context.Context, in *GetAllGenresRequest, opts ...grpc.CallOption) (*GetAllGenresResponse, error)
-	AddGenderToMovie(ctx context.Context, in *AddGenderToMovieRequest, opts ...grpc.CallOption) (*AddGenderToMovieResponse, error)
-	RemoveGenderFromMovie(ctx context.Context, in *RemoveGenderFromMovieRequest, opts ...grpc.CallOption) (*RemoveGenderFromMovieResponse, error)
+	GetById(ctx context.Context, in *GetByIdRequest, opts ...grpc.CallOption) (*GetByIdResponse, error)
+	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
+	AddToMovie(ctx context.Context, in *AddToMovieRequest, opts ...grpc.CallOption) (*AddToMovieResponse, error)
+	RemoveFromMovie(ctx context.Context, in *RemoveFromMovieRequest, opts ...grpc.CallOption) (*RemoveFromMovieResponse, error)
 }
 
 type genreServiceClient struct {
@@ -36,36 +36,36 @@ func NewGenreServiceClient(cc grpc.ClientConnInterface) GenreServiceClient {
 	return &genreServiceClient{cc}
 }
 
-func (c *genreServiceClient) GetGenreById(ctx context.Context, in *GetGenreByIdRequest, opts ...grpc.CallOption) (*GetGenreByIdResponse, error) {
-	out := new(GetGenreByIdResponse)
-	err := c.cc.Invoke(ctx, "/genre.GenreService/GetGenreById", in, out, opts...)
+func (c *genreServiceClient) GetById(ctx context.Context, in *GetByIdRequest, opts ...grpc.CallOption) (*GetByIdResponse, error) {
+	out := new(GetByIdResponse)
+	err := c.cc.Invoke(ctx, "/genre.GenreService/GetById", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *genreServiceClient) GetAllGenres(ctx context.Context, in *GetAllGenresRequest, opts ...grpc.CallOption) (*GetAllGenresResponse, error) {
-	out := new(GetAllGenresResponse)
-	err := c.cc.Invoke(ctx, "/genre.GenreService/GetAllGenres", in, out, opts...)
+func (c *genreServiceClient) GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error) {
+	out := new(GetAllResponse)
+	err := c.cc.Invoke(ctx, "/genre.GenreService/GetAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *genreServiceClient) AddGenderToMovie(ctx context.Context, in *AddGenderToMovieRequest, opts ...grpc.CallOption) (*AddGenderToMovieResponse, error) {
-	out := new(AddGenderToMovieResponse)
-	err := c.cc.Invoke(ctx, "/genre.GenreService/AddGenderToMovie", in, out, opts...)
+func (c *genreServiceClient) AddToMovie(ctx context.Context, in *AddToMovieRequest, opts ...grpc.CallOption) (*AddToMovieResponse, error) {
+	out := new(AddToMovieResponse)
+	err := c.cc.Invoke(ctx, "/genre.GenreService/AddToMovie", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *genreServiceClient) RemoveGenderFromMovie(ctx context.Context, in *RemoveGenderFromMovieRequest, opts ...grpc.CallOption) (*RemoveGenderFromMovieResponse, error) {
-	out := new(RemoveGenderFromMovieResponse)
-	err := c.cc.Invoke(ctx, "/genre.GenreService/RemoveGenderFromMovie", in, out, opts...)
+func (c *genreServiceClient) RemoveFromMovie(ctx context.Context, in *RemoveFromMovieRequest, opts ...grpc.CallOption) (*RemoveFromMovieResponse, error) {
+	out := new(RemoveFromMovieResponse)
+	err := c.cc.Invoke(ctx, "/genre.GenreService/RemoveFromMovie", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -76,10 +76,10 @@ func (c *genreServiceClient) RemoveGenderFromMovie(ctx context.Context, in *Remo
 // All implementations must embed UnimplementedGenreServiceServer
 // for forward compatibility
 type GenreServiceServer interface {
-	GetGenreById(context.Context, *GetGenreByIdRequest) (*GetGenreByIdResponse, error)
-	GetAllGenres(context.Context, *GetAllGenresRequest) (*GetAllGenresResponse, error)
-	AddGenderToMovie(context.Context, *AddGenderToMovieRequest) (*AddGenderToMovieResponse, error)
-	RemoveGenderFromMovie(context.Context, *RemoveGenderFromMovieRequest) (*RemoveGenderFromMovieResponse, error)
+	GetById(context.Context, *GetByIdRequest) (*GetByIdResponse, error)
+	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
+	AddToMovie(context.Context, *AddToMovieRequest) (*AddToMovieResponse, error)
+	RemoveFromMovie(context.Context, *RemoveFromMovieRequest) (*RemoveFromMovieResponse, error)
 	mustEmbedUnimplementedGenreServiceServer()
 }
 
@@ -87,17 +87,17 @@ type GenreServiceServer interface {
 type UnimplementedGenreServiceServer struct {
 }
 
-func (UnimplementedGenreServiceServer) GetGenreById(context.Context, *GetGenreByIdRequest) (*GetGenreByIdResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetGenreById not implemented")
+func (UnimplementedGenreServiceServer) GetById(context.Context, *GetByIdRequest) (*GetByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetById not implemented")
 }
-func (UnimplementedGenreServiceServer) GetAllGenres(context.Context, *GetAllGenresRequest) (*GetAllGenresResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllGenres not implemented")
+func (UnimplementedGenreServiceServer) GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
-func (UnimplementedGenreServiceServer) AddGenderToMovie(context.Context, *AddGenderToMovieRequest) (*AddGenderToMovieResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddGenderToMovie not implemented")
+func (UnimplementedGenreServiceServer) AddToMovie(context.Context, *AddToMovieRequest) (*AddToMovieResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddToMovie not implemented")
 }
-func (UnimplementedGenreServiceServer) RemoveGenderFromMovie(context.Context, *RemoveGenderFromMovieRequest) (*RemoveGenderFromMovieResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveGenderFromMovie not implemented")
+func (UnimplementedGenreServiceServer) RemoveFromMovie(context.Context, *RemoveFromMovieRequest) (*RemoveFromMovieResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveFromMovie not implemented")
 }
 func (UnimplementedGenreServiceServer) mustEmbedUnimplementedGenreServiceServer() {}
 
@@ -112,74 +112,74 @@ func RegisterGenreServiceServer(s grpc.ServiceRegistrar, srv GenreServiceServer)
 	s.RegisterService(&GenreService_ServiceDesc, srv)
 }
 
-func _GenreService_GetGenreById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetGenreByIdRequest)
+func _GenreService_GetById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetByIdRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GenreServiceServer).GetGenreById(ctx, in)
+		return srv.(GenreServiceServer).GetById(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/genre.GenreService/GetGenreById",
+		FullMethod: "/genre.GenreService/GetById",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GenreServiceServer).GetGenreById(ctx, req.(*GetGenreByIdRequest))
+		return srv.(GenreServiceServer).GetById(ctx, req.(*GetByIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _GenreService_GetAllGenres_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAllGenresRequest)
+func _GenreService_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GenreServiceServer).GetAllGenres(ctx, in)
+		return srv.(GenreServiceServer).GetAll(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/genre.GenreService/GetAllGenres",
+		FullMethod: "/genre.GenreService/GetAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GenreServiceServer).GetAllGenres(ctx, req.(*GetAllGenresRequest))
+		return srv.(GenreServiceServer).GetAll(ctx, req.(*GetAllRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _GenreService_AddGenderToMovie_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddGenderToMovieRequest)
+func _GenreService_AddToMovie_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddToMovieRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GenreServiceServer).AddGenderToMovie(ctx, in)
+		return srv.(GenreServiceServer).AddToMovie(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/genre.GenreService/AddGenderToMovie",
+		FullMethod: "/genre.GenreService/AddToMovie",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GenreServiceServer).AddGenderToMovie(ctx, req.(*AddGenderToMovieRequest))
+		return srv.(GenreServiceServer).AddToMovie(ctx, req.(*AddToMovieRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _GenreService_RemoveGenderFromMovie_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RemoveGenderFromMovieRequest)
+func _GenreService_RemoveFromMovie_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveFromMovieRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GenreServiceServer).RemoveGenderFromMovie(ctx, in)
+		return srv.(GenreServiceServer).RemoveFromMovie(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/genre.GenreService/RemoveGenderFromMovie",
+		FullMethod: "/genre.GenreService/RemoveFromMovie",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GenreServiceServer).RemoveGenderFromMovie(ctx, req.(*RemoveGenderFromMovieRequest))
+		return srv.(GenreServiceServer).RemoveFromMovie(ctx, req.(*RemoveFromMovieRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -192,20 +192,20 @@ var GenreService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*GenreServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetGenreById",
-			Handler:    _GenreService_GetGenreById_Handler,
+			MethodName: "GetById",
+			Handler:    _GenreService_GetById_Handler,
 		},
 		{
-			MethodName: "GetAllGenres",
-			Handler:    _GenreService_GetAllGenres_Handler,
+			MethodName: "GetAll",
+			Handler:    _GenreService_GetAll_Handler,
 		},
 		{
-			MethodName: "AddGenderToMovie",
-			Handler:    _GenreService_AddGenderToMovie_Handler,
+			MethodName: "AddToMovie",
+			Handler:    _GenreService_AddToMovie_Handler,
 		},
 		{
-			MethodName: "RemoveGenderFromMovie",
-			Handler:    _GenreService_RemoveGenderFromMovie_Handler,
+			MethodName: "RemoveFromMovie",
+			Handler:    _GenreService_RemoveFromMovie_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

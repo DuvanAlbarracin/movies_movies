@@ -11,7 +11,12 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (s *Server) GetGenreById(ctx context.Context, req *proto.GetGenreByIdRequest) (*proto.GetGenreByIdResponse, error) {
+type GenreServer struct {
+	H db.Handler
+	proto.UnimplementedGenreServiceServer
+}
+
+func (s *GenreServer) GetByIdRequest(ctx context.Context, req *proto.GetByIdRequest) (*proto.GetByIdResponse, error) {
 	genre, err := db.FindGenreById(s.H.Conn, req.Id)
 	if err != nil {
 		var code codes.Code
@@ -29,12 +34,12 @@ func (s *Server) GetGenreById(ctx context.Context, req *proto.GetGenreByIdReques
 
 	gp := utils.SetProtoGenre(genre)
 
-	return &proto.GetGenreByIdResponse{
+	return &proto.GetByIdResponse{
 		Genre: gp,
 	}, nil
 }
 
-func (s *Server) GetAllGenres(ctx context.Context, req *proto.GetAllGenresRequest) (*proto.GetAllGenresResponse, error) {
+func (s *GenreServer) GetAllGenres(ctx context.Context, req *proto.GetAllRequest) (*proto.GetAllResponse, error) {
 	var protoGenres []*proto.Genre
 
 	genres, err := db.GetAllGenres(s.H.Conn)
@@ -53,12 +58,12 @@ func (s *Server) GetAllGenres(ctx context.Context, req *proto.GetAllGenresReques
 		protoGenres = append(protoGenres, protoGenre)
 	}
 
-	return &proto.GetAllGenresResponse{
+	return &proto.GetAllResponse{
 		Genres: protoGenres,
 	}, nil
 }
 
-func (s *Server) AddGenderToMovie(ctx context.Context, req *proto.AddGenderToMovieRequest) (*proto.AddGenderToMovieResponse, error) {
+func (s *GenreServer) AddGenderToMovie(ctx context.Context, req *proto.AddToMovieRequest) (*proto.AddToMovieResponse, error) {
 	if _, err := db.FindMovieById(s.H.Conn, req.MovieId); err != nil {
 		return nil, status.New(codes.NotFound, "There is no movie with that id").Err()
 	}
@@ -71,12 +76,12 @@ func (s *Server) AddGenderToMovie(ctx context.Context, req *proto.AddGenderToMov
 		return nil, status.New(codes.Internal, "There was an error creating the join record").Err()
 	}
 
-	return &proto.AddGenderToMovieResponse{
+	return &proto.AddToMovieResponse{
 		Status: http.StatusOK,
 	}, nil
 }
 
-func (s *Server) RemoveGenderFromMovie(ctx context.Context, req *proto.RemoveGenderFromMovieRequest) (*proto.RemoveGenderFromMovieResponse, error) {
+func (s *GenreServer) RemoveGenderFromMovie(ctx context.Context, req *proto.RemoveFromMovieRequest) (*proto.RemoveFromMovieResponse, error) {
 	if _, err := db.FindMovieById(s.H.Conn, req.MovieId); err != nil {
 		return nil, status.New(codes.NotFound, "There is no movie with that id").Err()
 	}
@@ -89,7 +94,7 @@ func (s *Server) RemoveGenderFromMovie(ctx context.Context, req *proto.RemoveGen
 		return nil, status.New(codes.Internal, "There was an error deleting from join record").Err()
 	}
 
-	return &proto.RemoveGenderFromMovieResponse{
+	return &proto.RemoveFromMovieResponse{
 		Status: http.StatusOK,
 	}, nil
 }

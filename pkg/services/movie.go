@@ -12,12 +12,12 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type Server struct {
+type MovieServer struct {
 	H db.Handler
 	proto.UnimplementedMoviesServiceServer
 }
 
-func (s *Server) Create(ctx context.Context, req *proto.CreateRequest) (*proto.CreateResponse, error) {
+func (s *MovieServer) Create(ctx context.Context, req *proto.CreateRequest) (*proto.CreateResponse, error) {
 	tSanitized := utils.SanitizeString(req.Title)
 	movie := models.Movie{
 		Title:       &tSanitized,
@@ -37,7 +37,7 @@ func (s *Server) Create(ctx context.Context, req *proto.CreateRequest) (*proto.C
 	}, nil
 }
 
-func (s *Server) Delete(ctx context.Context, req *proto.DeleteRequest) (*proto.DeleteResponse, error) {
+func (s *MovieServer) Delete(ctx context.Context, req *proto.DeleteRequest) (*proto.DeleteResponse, error) {
 	_, err := db.FindMovieById(s.H.Conn, req.Id)
 	if err != nil {
 		var code codes.Code
@@ -63,7 +63,7 @@ func (s *Server) Delete(ctx context.Context, req *proto.DeleteRequest) (*proto.D
 	}, nil
 }
 
-func (s *Server) Modify(ctx context.Context, req *proto.ModifyRequest) (*proto.ModifyResponse, error) {
+func (s *MovieServer) Modify(ctx context.Context, req *proto.ModifyRequest) (*proto.ModifyResponse, error) {
 	var tSanitized string
 	reqMovie := models.Movie{
 		ReleaseYear: req.ReleaseYear,
@@ -88,7 +88,7 @@ func (s *Server) Modify(ctx context.Context, req *proto.ModifyRequest) (*proto.M
 	}, nil
 }
 
-func (s *Server) GetById(ctx context.Context, req *proto.GetByIdRequest) (*proto.GetByIdResponse, error) {
+func (s *MovieServer) GetById(ctx context.Context, req *proto.GetByIdRequest) (*proto.GetByIdResponse, error) {
 	movie, err := db.FindMovieById(s.H.Conn, req.Id)
 	if err != nil {
 		var code codes.Code
@@ -111,7 +111,7 @@ func (s *Server) GetById(ctx context.Context, req *proto.GetByIdRequest) (*proto
 	}, nil
 }
 
-func (s *Server) GetAll(ctx context.Context, req *proto.GetAllRequest) (*proto.GetAllResponse, error) {
+func (s *MovieServer) GetAll(ctx context.Context, req *proto.GetAllRequest) (*proto.GetAllResponse, error) {
 	var protoMovies []*proto.Movie
 
 	movies, err := db.GetAllMovies(s.H.Conn)
