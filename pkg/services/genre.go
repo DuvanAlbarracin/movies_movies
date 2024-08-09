@@ -16,7 +16,7 @@ type GenreServer struct {
 	proto.UnimplementedGenreServiceServer
 }
 
-func (s *GenreServer) GetByIdRequest(ctx context.Context, req *proto.GetByIdRequest) (*proto.GetByIdResponse, error) {
+func (s *GenreServer) GetById(ctx context.Context, req *proto.GetByIdRequest) (*proto.GetByIdResponse, error) {
 	genre, err := db.FindGenreById(s.H.Conn, req.Id)
 	if err != nil {
 		var code codes.Code
@@ -39,7 +39,7 @@ func (s *GenreServer) GetByIdRequest(ctx context.Context, req *proto.GetByIdRequ
 	}, nil
 }
 
-func (s *GenreServer) GetAllGenres(ctx context.Context, req *proto.GetAllRequest) (*proto.GetAllResponse, error) {
+func (s *GenreServer) GetAll(ctx context.Context, req *proto.GetAllRequest) (*proto.GetAllResponse, error) {
 	var protoGenres []*proto.Genre
 
 	genres, err := db.GetAllGenres(s.H.Conn)
@@ -63,7 +63,7 @@ func (s *GenreServer) GetAllGenres(ctx context.Context, req *proto.GetAllRequest
 	}, nil
 }
 
-func (s *GenreServer) AddGenderToMovie(ctx context.Context, req *proto.AddToMovieRequest) (*proto.AddToMovieResponse, error) {
+func (s *GenreServer) AddToMovie(ctx context.Context, req *proto.AddToMovieRequest) (*proto.AddToMovieResponse, error) {
 	if _, err := db.FindMovieById(s.H.Conn, req.MovieId); err != nil {
 		return nil, status.New(codes.NotFound, "There is no movie with that id").Err()
 	}
@@ -81,7 +81,7 @@ func (s *GenreServer) AddGenderToMovie(ctx context.Context, req *proto.AddToMovi
 	}, nil
 }
 
-func (s *GenreServer) RemoveGenderFromMovie(ctx context.Context, req *proto.RemoveFromMovieRequest) (*proto.RemoveFromMovieResponse, error) {
+func (s *GenreServer) RemoveFromMovie(ctx context.Context, req *proto.RemoveFromMovieRequest) (*proto.RemoveFromMovieResponse, error) {
 	if _, err := db.FindMovieById(s.H.Conn, req.MovieId); err != nil {
 		return nil, status.New(codes.NotFound, "There is no movie with that id").Err()
 	}

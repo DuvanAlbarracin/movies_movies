@@ -4,7 +4,8 @@ import (
 	"reflect"
 
 	"github.com/DuvanAlbarracin/movies_movies/pkg/models"
-	"github.com/DuvanAlbarracin/movies_movies/pkg/proto"
+	genreP "github.com/DuvanAlbarracin/movies_movies/pkg/proto/genre"
+	movieP "github.com/DuvanAlbarracin/movies_movies/pkg/proto/movie"
 )
 
 func SetModifyMap(s any) (map[string]any, []any) {
@@ -24,8 +25,8 @@ func SetModifyMap(s any) (map[string]any, []any) {
 	return resMap, args
 }
 
-func SetProtoMovie(movie models.Movie) *proto.Movie {
-	mp := proto.Movie{
+func SetProtoMovie(movie models.Movie) *movieP.Movie {
+	mp := movieP.Movie{
 		Id:          movie.Id,
 		Title:       movie.Title,
 		ReleaseYear: movie.ReleaseYear,
@@ -37,11 +38,11 @@ func SetProtoMovie(movie models.Movie) *proto.Movie {
 	return &mp
 }
 
-func SetProtoGenre(genre models.Genre) *proto.Genre {
-	mp := proto.Genre{
+func SetProtoGenre(genre models.Genre) *genreP.Genre {
+	gp := genreP.Genre{
 		Id:   genre.Id,
 		Name: genre.Name,
 	}
 
-	return &mp
+	return &gp
 }

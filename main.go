@@ -23,7 +23,7 @@ func main() {
 	if err != nil {
 		log.Fatalln("Failed to listening:", err)
 	}
-	log.Println("Auth service on:", config.Port)
+	log.Println("Movie service on:", config.Port)
 
 	movieServer := services.MovieServer{
 		H: h,

@@ -2,13 +2,11 @@ package db
 
 import (
 	"context"
-	"encoding/csv"
-	"fmt"
 	"log"
-	"os"
 
 	"github.com/DuvanAlbarracin/movies_movies/pkg/models"
 	"github.com/DuvanAlbarracin/movies_movies/pkg/utils"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -38,7 +36,7 @@ func Init(url string) Handler {
 	createMoviesTable(pool)
 	createGenrerTable(pool)
 	createGenrerMovieTable(pool)
-	populateGenreTable()
+	populateGenreTable(pool)
 
 	return Handler{Conn: pool}
 }
@@ -47,7 +45,7 @@ func createMoviesTable(pool *pgxpool.Pool) (err error) {
 	_, err = pool.Exec(context.Background(),
 		"CREATE TABLE IF NOT EXISTS movies (id SERIAL PRIMARY KEY, title VARCHAR(50) UNIQUE NOT NULL, release_year INTEGER NOT NULL, director_id INTEGER REFERENCES profiles (id), music_by VARCHAR(30), written_by VARCHAR(30));")
 	if err != nil {
-		log.Fatalln("Error creating the Movies table")
+		log.Fatalln("Error creating the Movies table:", err.Error())
 		return
 	}
 
@@ -57,9 +55,9 @@ func createMoviesTable(pool *pgxpool.Pool) (err error) {
 
 func createGenrerTable(pool *pgxpool.Pool) (err error) {
 	_, err = pool.Exec(context.Background(),
-		"CREATE TABLE IF NOT EXISTS genrers (id SERIAL PRIMARY KEY, name VARCHAR(30) UNIQUE NOT NULL);")
+		"CREATE TABLE IF NOT EXISTS genres (id SERIAL PRIMARY KEY, name VARCHAR(30) UNIQUE NOT NULL);")
 	if err != nil {
-		log.Fatalln("Error creating the Genres table")
+		log.Fatalln("Error creating the Genres table:", err.Error())
 		return
 	}
 
@@ -67,34 +65,58 @@ func createGenrerTable(pool *pgxpool.Pool) (err error) {
 	return nil
 }
 
-func populateGenreTable() (err error) {
-	file, err := os.Open("../../genres.csv")
+func populateGenreTable(pool *pgxpool.Pool) (err error) {
+	rows, err := GetAllGenres(pool)
 	if err != nil {
-		log.Fatalln("Error opening the Genres csv seed")
-		return
-	}
-	defer file.Close()
-
-	r := csv.NewReader(file)
-	genres, err := r.ReadAll()
-	if err != nil {
-		log.Fatalln("Error reading the Genres csv seed")
+		log.Fatalln("Error checking the Genres table:", err.Error())
 		return
 	}
 
-	fmt.Println("Readed from csv: ", genres)
+	if len(rows) != 0 {
+		log.Println("Genres table already populated")
+		return nil
+	}
+
+	genres := [][]interface{}{
+		{"action"}, {"adventure"},
+		{"animation"}, {"biography"},
+		{"comedy"}, {"crime"},
+		{"documentary"}, {"drama"},
+		{"family"}, {"fantasy"},
+		{"game-show"}, {"history"},
+		{"horror"}, {"music"},
+		{"musical"}, {"mystery"},
+		{"news"}, {"noir"},
+		{"reality-tv"}, {"romance"},
+		{"sci-fi"}, {"short"},
+		{"sport"}, {"talk-show"},
+		{"thriller"}, {"war"}, {"western"},
+	}
+
+	columns := []string{
+		"name",
+	}
+
+	insertedRows, err := pool.CopyFrom(context.Background(), pgx.Identifier{"genres"}, columns, pgx.CopyFromRows(genres))
+	if err != nil {
+		log.Fatalln("Error creating the Genres table:", err.Error())
+		return
+	}
+
+	log.Printf("Genres table populated! Rows inserted: %d\n", insertedRows)
+
 	return nil
 }
 
 func createGenrerMovieTable(pool *pgxpool.Pool) (err error) {
 	_, err = pool.Exec(context.Background(),
-		"CREATE TABLE IF NOT EXISTS genremovie (genrer_id INT REFERENCES genders(id), movie_id INT REFERENCES movies(id), (genrer_id, movie_id) PRIMARY KEY );")
+		"CREATE TABLE IF NOT EXISTS genremovie (genre_id INT REFERENCES genres, movie_id INT REFERENCES movies);")
 	if err != nil {
-		log.Fatalln("Error creating the Joing table (GenreMovie)")
+		log.Fatalln("Error creating the Joing table (GenreMovie):", err.Error())
 		return
 	}
 
-	log.Println("Join table (GenrerMovies) created succesfully!")
+	log.Println("Join table (GenreMovie) created succesfully!")
 	return nil
 }
 
