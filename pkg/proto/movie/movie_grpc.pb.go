@@ -27,6 +27,8 @@ type MoviesServiceClient interface {
 	Modify(ctx context.Context, in *ModifyRequest, opts ...grpc.CallOption) (*ModifyResponse, error)
 	GetById(ctx context.Context, in *GetByIdRequest, opts ...grpc.CallOption) (*GetByIdResponse, error)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
+	AddGenre(ctx context.Context, in *AddGenreRequest, opts ...grpc.CallOption) (*AddGenreResponse, error)
+	RemoveGenre(ctx context.Context, in *RemoveGenreRequest, opts ...grpc.CallOption) (*RemoveGenreResponse, error)
 }
 
 type moviesServiceClient struct {
@@ -82,6 +84,24 @@ func (c *moviesServiceClient) GetAll(ctx context.Context, in *GetAllRequest, opt
 	return out, nil
 }
 
+func (c *moviesServiceClient) AddGenre(ctx context.Context, in *AddGenreRequest, opts ...grpc.CallOption) (*AddGenreResponse, error) {
+	out := new(AddGenreResponse)
+	err := c.cc.Invoke(ctx, "/movie.MoviesService/AddGenre", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *moviesServiceClient) RemoveGenre(ctx context.Context, in *RemoveGenreRequest, opts ...grpc.CallOption) (*RemoveGenreResponse, error) {
+	out := new(RemoveGenreResponse)
+	err := c.cc.Invoke(ctx, "/movie.MoviesService/RemoveGenre", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MoviesServiceServer is the server API for MoviesService service.
 // All implementations must embed UnimplementedMoviesServiceServer
 // for forward compatibility
@@ -91,6 +111,8 @@ type MoviesServiceServer interface {
 	Modify(context.Context, *ModifyRequest) (*ModifyResponse, error)
 	GetById(context.Context, *GetByIdRequest) (*GetByIdResponse, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
+	AddGenre(context.Context, *AddGenreRequest) (*AddGenreResponse, error)
+	RemoveGenre(context.Context, *RemoveGenreRequest) (*RemoveGenreResponse, error)
 	mustEmbedUnimplementedMoviesServiceServer()
 }
 
@@ -112,6 +134,12 @@ func (UnimplementedMoviesServiceServer) GetById(context.Context, *GetByIdRequest
 }
 func (UnimplementedMoviesServiceServer) GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
+}
+func (UnimplementedMoviesServiceServer) AddGenre(context.Context, *AddGenreRequest) (*AddGenreResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddGenre not implemented")
+}
+func (UnimplementedMoviesServiceServer) RemoveGenre(context.Context, *RemoveGenreRequest) (*RemoveGenreResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveGenre not implemented")
 }
 func (UnimplementedMoviesServiceServer) mustEmbedUnimplementedMoviesServiceServer() {}
 
@@ -216,6 +244,42 @@ func _MoviesService_GetAll_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MoviesService_AddGenre_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddGenreRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MoviesServiceServer).AddGenre(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/movie.MoviesService/AddGenre",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MoviesServiceServer).AddGenre(ctx, req.(*AddGenreRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MoviesService_RemoveGenre_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveGenreRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MoviesServiceServer).RemoveGenre(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/movie.MoviesService/RemoveGenre",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MoviesServiceServer).RemoveGenre(ctx, req.(*RemoveGenreRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MoviesService_ServiceDesc is the grpc.ServiceDesc for MoviesService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -242,6 +306,14 @@ var MoviesService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAll",
 			Handler:    _MoviesService_GetAll_Handler,
+		},
+		{
+			MethodName: "AddGenre",
+			Handler:    _MoviesService_AddGenre_Handler,
+		},
+		{
+			MethodName: "RemoveGenre",
+			Handler:    _MoviesService_RemoveGenre_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -202,7 +202,7 @@ func GetAllGenres(pool *pgxpool.Pool) ([]models.Genre, error) {
 	return genres, err
 }
 
-func AddGenderToMovie(pool *pgxpool.Pool, genre_id int64, movie_id int64) (err error) {
+func AddGenreToMovie(pool *pgxpool.Pool, genre_id int64, movie_id int64) (err error) {
 	_, err = pool.Exec(context.Background(),
 		"insert into genremovie(genre_id, movie_id) values($1, $2)",
 		genre_id,
@@ -211,7 +211,7 @@ func AddGenderToMovie(pool *pgxpool.Pool, genre_id int64, movie_id int64) (err e
 	return
 }
 
-func RemoveGenderFromMovie(pool *pgxpool.Pool, genre_id int64, movie_id int64) (err error) {
+func RemoveGenreFromMovie(pool *pgxpool.Pool, genre_id int64, movie_id int64) (err error) {
 	_, err = pool.Exec(context.Background(),
 		"DELETE FROM genremovie WHERE genre_id = $1 AND movie_id = $2",
 		genre_id,

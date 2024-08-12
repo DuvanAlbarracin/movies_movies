@@ -134,3 +134,39 @@ func (s *MovieServer) GetAll(ctx context.Context, req *proto.GetAllRequest) (*pr
 		Movies: protoMovies,
 	}, nil
 }
+
+func (s *MovieServer) AddGenre(ctx context.Context, req *proto.AddGenreRequest) (*proto.AddGenreResponse, error) {
+	if _, err := db.FindMovieById(s.H.Conn, req.MovieId); err != nil {
+		return nil, status.New(codes.NotFound, "There is no movie with that id").Err()
+	}
+
+	if _, err := db.FindGenreById(s.H.Conn, req.GenreId); err != nil {
+		return nil, status.New(codes.NotFound, "There is no genre with that id").Err()
+	}
+
+	if err := db.AddGenreToMovie(s.H.Conn, req.GenreId, req.MovieId); err != nil {
+		return nil, status.New(codes.Internal, "There was an error creating the join record").Err()
+	}
+
+	return &proto.AddGenreResponse{
+		Status: http.StatusOK,
+	}, nil
+}
+
+func (s *MovieServer) RemoveGenre(ctx context.Context, req *proto.RemoveGenreRequest) (*proto.RemoveGenreResponse, error) {
+	if _, err := db.FindMovieById(s.H.Conn, req.MovieId); err != nil {
+		return nil, status.New(codes.NotFound, "There is no movie with that id").Err()
+	}
+
+	if _, err := db.FindGenreById(s.H.Conn, req.GenreId); err != nil {
+		return nil, status.New(codes.NotFound, "There is no genre with that id").Err()
+	}
+
+	if err := db.RemoveGenreFromMovie(s.H.Conn, req.GenreId, req.MovieId); err != nil {
+		return nil, status.New(codes.Internal, "There was an error deleting from join record").Err()
+	}
+
+	return &proto.RemoveGenreResponse{
+		Status: http.StatusOK,
+	}, nil
+}

@@ -10,6 +10,8 @@ service MoviesService {
   rpc Modify(ModifyRequest) returns (ModifyResponse) {}
   rpc GetById(GetByIdRequest) returns (GetByIdResponse) {}
   rpc GetAll(GetAllRequest) returns (GetAllResponse) {}
+  rpc AddGenre(AddGenreRequest) returns (AddGenreResponse) {}
+  rpc RemoveGenre(RemoveGenreRequest) returns (RemoveGenreResponse) {}
 }
 
 message Movie {
@@ -67,3 +69,23 @@ message GetByIdResponse {
 message GetAllRequest {}
 
 message GetAllResponse { repeated Movie movies = 1; }
+
+message AddGenreRequest {
+    int64 movie_id = 1;
+    int64 genre_id = 2;
+}
+
+message AddGenreResponse {
+    int32 status = 1;
+    string error = 2;
+}
+
+message RemoveGenreRequest{
+    int64 movie_id = 1;
+    int64 genre_id = 2;
+}
+
+message RemoveGenreResponse{
+    int32 status = 1;
+    string error = 2;
+}
