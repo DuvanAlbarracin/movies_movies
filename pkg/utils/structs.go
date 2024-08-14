@@ -15,11 +15,18 @@ func SetModifyMap(s any) (map[string]any, []any) {
 
 	for i := 0; i < ref.NumField(); i++ {
 		f := ref.Field(i)
-		if !f.IsZero() {
-			v := ref.Type().Field(i)
-			resMap[v.Name] = f.Interface()
-			args = append(args, f.Interface())
+		if f.IsZero() {
+			continue
 		}
+
+		if f.Kind() == reflect.Pointer {
+			f = f.Elem()
+		}
+
+		v := ref.Type().Field(i)
+		fValue := f.Interface()
+		resMap[ToSnakeCase(v.Name)] = fValue
+		args = append(args, fValue)
 	}
 
 	return resMap, args
